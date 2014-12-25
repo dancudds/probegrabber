@@ -7,6 +7,7 @@ from scapy.all import *
 
 SCAN_TIME = 30 # Number of seconds to sniff (update frequency)
 unique_probe = []
+unique_mac = []
 
 
 def Handler(pkts):
@@ -17,6 +18,7 @@ def Handler(pkts):
 	  p = p.payload
 	 else:
 		 if (p.subtype == 4L):
+			mac = p.addr2
 			while Dot11Elt in p:
 			 pa = p[Dot11Elt]
 			 if pa.ID == 0:
@@ -25,6 +27,8 @@ def Handler(pkts):
 			   print "Found probe: " + ssid
 			   if ssid not in unique_probe:
 			    unique_probe.append(ssid)
+			    if mac not in unique_mac:
+			     unique_mac.append(mac)
 			  break
 			 p = p.payload
 
@@ -59,3 +63,6 @@ if __name__ == "__main__":
 	print "\r\n\r\nUnique list of SSID probes:"
 	for ssid in unique_probe:
 	 print ssid
+	print "\r\n\r\nUnique list of MAC addresses probing:"
+	for mac in unique_mac:
+	 print mac
